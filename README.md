@@ -1,13 +1,13 @@
-# Bert Model for Predicting Tags Movies
+# movieBERT - BERT Model for Predicting Tags Movies
 
-In this Repo we use a Bert base Model in order to predict tags movies from a dataset called "mspt_full_data_csv".
+In this Repo we use a BERT base Model in order to predict tags movies from a dataset called "mspt_full_data_csv".
 
 ## Directory Tree
 - **data**: contains a custom dataset loading methods;
     - MovieDataset.py
     - filtered_mt.csv
     - mspt_full_data_csv
-- **model**: contains a Bert Model for classifier and metrics for 10 epochs of the Model;
+- **model**: contains a BERT Model for classifier and metrics for 10 epochs of the Model;
     - BERTClassifier.py
     - metrics_10epochs_2FCL.png
 - **preprocessing**: contains a pyhton file for preprocessing of the Dataset;
@@ -26,10 +26,12 @@ We then used a basic Bert model (consisting of 12 Transformer Encoders) and defi
 We evaluated various variants of the model (3 versions in particular) in order to improve its accuracy.
 
 
-## Features of our Bert Model 
+## Features of our BERT Model 
 
 - Predicting tag movies from a given prompt
 - Evaluation of model accuracy
+Below, an example of output:
+![output](https://i.ibb.co/W6dW8vC/Screenshot-2024-01-10-alle-15-43-40.png)
 
 ## Authors
 
