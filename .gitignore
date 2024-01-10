@@ -2,4 +2,3 @@
 .venv
 model/bert_classifier.pth
 .gitignore
-.idea
