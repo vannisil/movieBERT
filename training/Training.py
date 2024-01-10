@@ -32,11 +32,13 @@ total_steps = len(train_dataloader) * num_epochs
 scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=total_steps)
 torch.cuda.empty_cache()
 
+best_accuracy = 0.0
 for epoch in range(num_epochs):
     print(f"Epoch {epoch + 1}/{num_epochs}")
     train(model, train_dataloader, optimizer, scheduler, device)
     accuracy, report = evaluate(model, val_dataloader, device)
+    if accuracy > best_accuracy:
+      torch.save(model.state_dict(), "bert_classifier.pth")
+      best_accuracy = accuracy
     print(f"Validation Accuracy: {accuracy:.4f}")
     print(report)
-
-torch.save(model.state_dict(), "bert_classifier.pth")
