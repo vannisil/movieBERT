@@ -16,8 +16,8 @@ In our project we use the BERT base pre-trained model in order to predict tags m
     - Training.py
 - **utils**: contains the methods to perform traing, validation and test; 
     - Utils.py
-- Inference.py: with this file, you can test the model with the three movie examples written in the "test_text" array;
-- movieBERT-Colab.ipynb: the Colab file where we have done all the tests. You can download it, upload on [Google Colab](https://colab.research.google.com) and visualize it.
+- _Inference.py_: with this file, you can test the model with the three movie examples written in the "test_text" array;
+- _movieBERT-Colab.ipynb_: the Colab file where we have done all the tests. You can download it, upload on [Google Colab](https://colab.research.google.com) and visualize it.
 
 N.B.: to test the model, you have to download the fine-tuned BERT from the following Google Drive [link](https://drive.google.com/drive/folders/1NWkrn6-gT-TSUJs-hJcvneqx2Ql7GvIz?usp=sharing) and put the file into the "model" folder.
 
