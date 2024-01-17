@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="cd1ab926-d078-4188-a6ad-c44b758e2489" name="Changes" comment="metrics for the model">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/metrics_10epochs_2FCL.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,6 +82,9 @@
       <workItem from="1704885370883" duration="42000" />
       <workItem from="1704965255181" duration="8000" />
       <workItem from="1705500251549" duration="354000" />
+      <workItem from="1705500614279" duration="625000" />
+      <workItem from="1705501395622" duration="19000" />
+      <workItem from="1705501988027" duration="46000" />
     </task>
     <task id="LOCAL-00001" summary="metrics for the model">
       <option name="closed" value="true" />
