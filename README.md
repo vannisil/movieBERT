@@ -35,6 +35,10 @@ We evaluated various variants of the model (3 versions in particular) in order t
 Below, an example of its output:
 ![output](https://i.ibb.co/W6dW8vC/Screenshot-2024-01-10-alle-15-43-40.png)
 
+## Canva presentation
+
+You can see the project presentation at this [link](https://www.canva.com/design/DAF52mLNHP4/m6oRdloxEGFHSME1BU-7gQ/edit?utm_content=DAF52mLNHP4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ## Authors
 
 - [Giovanni Silvestri](https://www.github.com/vannisil)
