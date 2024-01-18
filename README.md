@@ -1,4 +1,4 @@
-![logo](https://i.ibb.co/2Ks1Q1S/IMG-5922.jpg =250x250)
+<img src="https://i.ibb.co/2Ks1Q1S/IMG-5922.jpg" width="200px" heigth="200px"/>
 
 # movieBERT - BERT Model for Predicting Tags Movies
 
