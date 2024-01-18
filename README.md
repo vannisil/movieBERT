@@ -5,14 +5,14 @@
 
 # movieBERT - BERT Model for Predicting Tags Movies
 
-In our project we use the BERT base pre-trained model in order to predict tags movies from a dataset called "mspt_full_data_csv".
+In our project we use the BERT base pre-trained model in order to predict tags for movies from a dataset called "mspt_full_data_csv".
 
 ## Directory Tree
 - **data**: contains a custom dataset loading methods;
     - MovieDataset.py
     - filtered_mt.csv
     - mspt_full_data_csv
-- **model**: contains the BERT model class for the classifier and the best metrics for 10 epochs of the model;
+- **model**: contains the BERT model class for the classifier and the best metrics for 10 epochs of training;
     - BERTClassifier.py
     - best_epoch.png
 - **preprocessing**: contains a pyhton file used to preprocess the dataset;
