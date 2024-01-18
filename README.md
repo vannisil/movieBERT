@@ -24,11 +24,11 @@ In our project we use the BERT base pre-trained model in order to predict tags f
 - _Inference.py_: with this file, you can test the model with the three movie examples written in the "test_text" array;
 - _movieBERT-Colab.ipynb_: the Colab file where we have done all the tests. You can upload it on [Google Colab](https://colab.research.google.com) and visualize all the outputs.
 
-N.B.: to test the model, you have to download the fine-tuned BERT from the following Google Drive [link](https://drive.google.com/drive/folders/1NWkrn6-gT-TSUJs-hJcvneqx2Ql7GvIz?usp=sharing) and put the file into the "model" folder.
+N.B.: to test the model, you have to download the fine-tuned BERT .pth file from the following Google Drive [link](https://drive.google.com/drive/folders/1NWkrn6-gT-TSUJs-hJcvneqx2Ql7GvIz?usp=sharing) and put the file into the "model" folder.
 
 # Description of the model
-Our Bert model aims to predict film tags, given a carefully preprocessed dataset.
-The dataset in question is a csv file containing film name, description and genre (maximum 5 types of genres). 
+Our Bert model aims to predict films tags, given a carefully preprocessed dataset.
+The dataset in question is a csv file containing film name, description and genre (we have chosen maximum 5 types of genres). 
 We preprocessed the dataset in order to define tokens to be passed to the model for learning.
 We then used the BERT base model (consisting of 12 Transformer Encoders) and defined suitable hyperparameters and started the training.
 We evaluated various variants of the model (3 versions in particular) in order to improve its accuracy. We selected one of them.
