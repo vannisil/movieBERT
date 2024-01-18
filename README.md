@@ -1,4 +1,4 @@
-<div style="display: flex; align-items: center; justify-content: center; flex-direction: row;">
+<div style={"display: flex; align-items: center; justify-content: center; flex-direction: row;"}>
     <img src="https://i.ibb.co/vPrn2ff/OIG-Ph6w-Q7-WBAp-LZa8-UZJpr-W.jpg" width="200px" heigth="200px"/>
     <h1>movieBERT - BERT Model for Predicting Tags Movies</h1>
 </div>
