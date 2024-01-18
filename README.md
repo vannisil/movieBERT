@@ -1,7 +1,7 @@
-<p align="center">
-    <h1>movieBERT - BERT Model for Predicting Tags Movies</h1>
+<div display="flex">
     <img src="https://i.ibb.co/vPrn2ff/OIG-Ph6w-Q7-WBAp-LZa8-UZJpr-W.jpg" width="200px" heigth="200px"/>
-</p>
+    <h1>movieBERT - BERT Model for Predicting Tags Movies</h1>
+</div>
 
 
 # movieBERT - BERT Model for Predicting Tags Movies
