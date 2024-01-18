@@ -1,4 +1,4 @@
-[!logo](https://i.ibb.co/2Ks1Q1S/IMG-5922.jpg)
+![logo](https://i.ibb.co/2Ks1Q1S/IMG-5922.jpg)
 
 # movieBERT - BERT Model for Predicting Tags Movies
 
