@@ -1,6 +1,9 @@
 <p align="center">
-    <img src="https://i.ibb.co/2Ks1Q1S/IMG-5922.jpg" width="200px" heigth="200px"/>
+    <h1>movieBERT - BERT Model for Predicting Tags Movies</h1>
+    <img src="https://i.ibb.co/vPrn2ff/OIG-Ph6w-Q7-WBAp-LZa8-UZJpr-W.jpg" width="200px" heigth="200px"/>
 </p>
+
+
 # movieBERT - BERT Model for Predicting Tags Movies
 
 In our project we use the BERT base pre-trained model in order to predict tags movies from a dataset called "mspt_full_data_csv".
