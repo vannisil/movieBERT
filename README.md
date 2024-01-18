@@ -1,3 +1,5 @@
+[!logo](https://i.ibb.co/2Ks1Q1S/IMG-5922.jpg)
+
 # movieBERT - BERT Model for Predicting Tags Movies
 
 In our project we use the BERT base pre-trained model in order to predict tags movies from a dataset called "mspt_full_data_csv".
