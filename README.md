@@ -23,10 +23,9 @@ In our project we use the BERT base pre-trained model in order to predict tags f
     - Utils.py
 - Inference.py: with this file, you can test the model with the three movie examples written in the "test_text" array;
 - movieBERT-Colab.ipynb: the Colab file where we have done all the tests. You can download it, upload on [Google Colab](https://colab.research.google.com) and visualize it.
-=======
 - _Inference.py_: with this file, you can test the model with the three movie examples written in the "test_text" array;
 - _movieBERT-Colab.ipynb_: the Colab file where we have done all the tests. You can upload it on [Google Colab](https://colab.research.google.com) and visualize all the outputs. You can also check the Colab file at this [link](https://colab.research.google.com/drive/1Mr68cP71SS5rYXcKaNydhZ1sJuF_n0Cb?usp=sharing).
-- _LSTM_test.ipynb_: the Colab file where we have created an LSTM model to compare the performances of our BERT-based model with this one. You can upload it on Google Colab (the same link as the previous point) or you can check it at this [link](https://colab.research.google.com/drive/1KkNALQes7SNrqwqhFL4MPUGQOVdq_Kk-?usp=sharing)
+- _LSTM_test.ipynb_: the Colab file where we have created an LSTM model to compare the performances of our BERT-based model with this one. You can upload it on Google Colab (the same link as the previous point) or you can check it at this [link](https://colab.research.google.com/drive/1KkNALQes7SNrqwqhFL4MPUGQOVdq_Kk-?usp=sharing).
 
 N.B.: to test the model, you have to download the fine-tuned BERT .pth file from the following Google Drive [link](https://drive.google.com/drive/folders/1NWkrn6-gT-TSUJs-hJcvneqx2Ql7GvIz?usp=sharing) and put the file into the "model" folder. To test the LSTM, you have to download the trained model from this [link](https://drive.google.com/file/d/16BxkIbFHcoLe31TJoNHPMnPIi8rJ8vzD/view?usp=sharing) and you can find the "filtered_mt.csv" dataset in the "data" folder. 
 
