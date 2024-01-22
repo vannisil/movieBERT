@@ -16,4 +16,5 @@ filtered_mt = filtered_mt.drop(labels=['title', 'plot_synopsis'], axis=1)
 filtered_mt = filtered_mt.rename(columns={'tags': 'labels'})
 tag_mapping = {tag: str(i) for i, tag in enumerate(desired_tags)}
 filtered_mt['labels'] = filtered_mt['labels'].map(tag_mapping)
+
 print(filtered_mt)
