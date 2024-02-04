@@ -1,0 +1,524 @@
+Index: movieGPT_Colab.ipynb
+===================================================================
+diff --git a/movieGPT_Colab.ipynb b/movieGPT_Colab.ipynb
+deleted file mode 100644
+--- a/movieGPT_Colab.ipynb	(revision dc54ba4f4e0c0c8137233f3a7ea7142e868b62bb)
++++ /dev/null	(revision dc54ba4f4e0c0c8137233f3a7ea7142e868b62bb)
+@@ -1,497 +0,0 @@
+-{
+-  "cells": [
+-    {
+-      "cell_type": "markdown",
+-      "source": [
+-        "**Collegamento Drive**"
+-      ],
+-      "metadata": {
+-        "id": "8DMzu9NNWcD2"
+-      }
+-    },
+-    {
+-      "cell_type": "code",
+-      "source": [
+-        "from google.colab import drive\n",
+-        "drive.mount('/content/drive')"
+-      ],
+-      "metadata": {
+-        "colab": {
+-          "base_uri": "https://localhost:8080/"
+-        },
+-        "id": "bXqlc1bHlYzW",
+-        "outputId": "6f7767bb-745a-4839-ce37-845458761610"
+-      },
+-      "execution_count": 1,
+-      "outputs": [
+-        {
+-          "output_type": "stream",
+-          "name": "stdout",
+-          "text": [
+-            "Mounted at /content/drive\n"
+-          ]
+-        }
+-      ]
+-    },
+-    {
+-      "cell_type": "markdown",
+-      "source": [
+-        "**Custom dataset class**"
+-      ],
+-      "metadata": {
+-        "id": "XroPlZsVW_cS"
+-      }
+-    },
+-    {
+-      "cell_type": "code",
+-      "execution_count": 2,
+-      "metadata": {
+-        "id": "dcpqJmyhApuU"
+-      },
+-      "outputs": [],
+-      "source": [
+-        "import torch\n",
+-        "from torch.utils.data import DataLoader, Dataset\n",
+-        "\n",
+-        "class MovieDataset(Dataset):\n",
+-        "    def __init__(self, texts, labels, tokenizer, max_length=128):\n",
+-        "        self.texts = texts\n",
+-        "        self.labels = labels\n",
+-        "        self.tokenizer = tokenizer\n",
+-        "        self.max_length = max_length\n",
+-        "\n",
+-        "    def __len__(self):\n",
+-        "        return len(self.texts)\n",
+-        "\n",
+-        "    def __getitem__(self, idx):\n",
+-        "        text = self.texts.iloc[idx]\n",
+-        "\n",
+-        "        # Convert label to integer\n",
+-        "        label = torch.tensor(int(self.labels.iloc[idx]), dtype=torch.long)\n",
+-        "\n",
+-        "        encoding = self.tokenizer(\n",
+-        "            text,\n",
+-        "            max_length=self.max_length,\n",
+-        "            padding='max_length',  # Use 'max_length' for padding\n",
+-        "            truncation=True,\n",
+-        "            return_tensors='pt'\n",
+-        "        )\n",
+-        "\n",
+-        "        return {\n",
+-        "            'input_ids': encoding['input_ids'].squeeze(),\n",
+-        "            'attention_mask': encoding['attention_mask'].squeeze(),\n",
+-        "            'labels': label\n",
+-        "        }"
+-      ]
+-    },
+-    {
+-      "cell_type": "markdown",
+-      "source": [
+-        "**Import new dataset**"
+-      ],
+-      "metadata": {
+-        "id": "3x9XH4H5XMW9"
+-      }
+-    },
+-    {
+-      "cell_type": "code",
+-      "source": [
+-        "import pandas as pd\n",
+-        "\n",
+-        "data = pd.read_csv('/content/drive/MyDrive/BDA_project/mpst_full_data.csv')\n",
+-        "print(data)"
+-      ],
+-      "metadata": {
+-        "colab": {
+-          "base_uri": "https://localhost:8080/"
+-        },
+-        "id": "dGCmVgeQkW0G",
+-        "outputId": "e2205708-1ed6-457e-82de-3fd3e1c4a609"
+-      },
+-      "execution_count": 3,
+-      "outputs": [
+-        {
+-          "output_type": "stream",
+-          "name": "stdout",
+-          "text": [
+-            "         imdb_id                                          title  \\\n",
+-            "0      tt0057603                        I tre volti della paura   \n",
+-            "1      tt1733125  Dungeons & Dragons: The Book of Vile Darkness   \n",
+-            "2      tt0033045                     The Shop Around the Corner   \n",
+-            "3      tt0113862                             Mr. Holland's Opus   \n",
+-            "4      tt0086250                                       Scarface   \n",
+-            "...          ...                                            ...   \n",
+-            "14823  tt0219952                                  Lucky Numbers   \n",
+-            "14824  tt1371159                                     Iron Man 2   \n",
+-            "14825  tt0063443                                     Play Dirty   \n",
+-            "14826  tt0039464                                      High Wall   \n",
+-            "14827  tt0235166                               Against All Hope   \n",
+-            "\n",
+-            "                                           plot_synopsis  \\\n",
+-            "0      Note: this synopsis is for the orginal Italian...   \n",
+-            "1      Two thousand years ago, Nhagruul the Foul, a s...   \n",
+-            "2      Matuschek's, a gift store in Budapest, is the ...   \n",
+-            "3      Glenn Holland, not a morning person by anyone'...   \n",
+-            "4      In May 1980, a Cuban man named Tony Montana (A...   \n",
+-            "...                                                  ...   \n",
+-            "14823  In 1988 Russ Richards (John Travolta), the wea...   \n",
+-            "14824  In Russia, the media covers Tony Stark's discl...   \n",
+-            "14825  During the North African Campaign in World War...   \n",
+-            "14826  Steven Kenet catches his unfaithful wife in th...   \n",
+-            "14827  Sometime in the 1950s in Chicago a man, Cecil ...   \n",
+-            "\n",
+-            "                                                    tags  split  \\\n",
+-            "0              cult, horror, gothic, murder, atmospheric  train   \n",
+-            "1                                               violence  train   \n",
+-            "2                                               romantic   test   \n",
+-            "3                 inspiring, romantic, stupid, feel-good  train   \n",
+-            "4      cruelty, murder, dramatic, cult, violence, atm...    val   \n",
+-            "...                                                  ...    ...   \n",
+-            "14823                                     comedy, murder   test   \n",
+-            "14824                         good versus evil, violence  train   \n",
+-            "14825                                           anti war  train   \n",
+-            "14826                                             murder   test   \n",
+-            "14827                                     christian film   test   \n",
+-            "\n",
+-            "      synopsis_source  \n",
+-            "0                imdb  \n",
+-            "1                imdb  \n",
+-            "2                imdb  \n",
+-            "3                imdb  \n",
+-            "4                imdb  \n",
+-            "...               ...  \n",
+-            "14823       wikipedia  \n",
+-            "14824       wikipedia  \n",
+-            "14825       wikipedia  \n",
+-            "14826       wikipedia  \n",
+-            "14827       wikipedia  \n",
+-            "\n",
+-            "[14828 rows x 6 columns]\n"
+-          ]
+-        }
+-      ]
+-    },
+-    {
+-      "cell_type": "markdown",
+-      "source": [
+-        "**Preprocessing**"
+-      ],
+-      "metadata": {
+-        "id": "Fm8srtRBXZzy"
+-      }
+-    },
+-    {
+-      "cell_type": "code",
+-      "source": [
+-        "# Drop unnecessary columns ('imdb_id', 'split', 'synopsis_source') from the DataFrame 'data'\n",
+-        "data = data.drop(labels=['imdb_id', 'split', 'synopsis_source'], axis=1)\n",
+-        "\n",
+-        "# Count the occurrences of each unique tag and select the top 15 most frequent tags\n",
+-        "tag_class = data[\"tags\"].value_counts().head(15)\n",
+-        "\n",
+-        "# Define a list of desired tags for filtering\n",
+-        "desired_tags = [\"murder\", \"romantic\", \"violence\", \"psychedelic\", \"comedy\"]\n",
+-        "\n",
+-        "# Filter the DataFrame 'data' to include only rows with tags present in the 'desired_tags' list\n",
+-        "filtered_mt = data[data['tags'].isin(desired_tags)]\n",
+-        "\n",
+-        "# Reset the index of the resulting DataFrame and drop the old index\n",
+-        "filtered_mt = filtered_mt.reset_index(drop=True)\n",
+-        "\n",
+-        "# Save the filtered DataFrame to a CSV file in a specified drive location\n",
+-        "filtered_mt.to_csv('/content/drive/MyDrive/Database/filtered_mt.csv', index=False)\n",
+-        "\n",
+-        "# Print the resulting filtered DataFrame\n",
+-        "print(filtered_mt)"
+-      ],
+-      "metadata": {
+-        "colab": {
+-          "base_uri": "https://localhost:8080/"
+-        },
+-        "id": "COWRC6FImI87",
+-        "outputId": "adc1393a-d913-451a-ad1e-83ad95ee6796"
+-      },
+-      "execution_count": 4,
+-      "outputs": [
+-        {
+-          "output_type": "stream",
+-          "name": "stdout",
+-          "text": [
+-            "                                              title  \\\n",
+-            "0     Dungeons & Dragons: The Book of Vile Darkness   \n",
+-            "1                        The Shop Around the Corner   \n",
+-            "2                                     Little Caesar   \n",
+-            "3                                  The Last Emperor   \n",
+-            "4                                     Taste of Fear   \n",
+-            "...                                             ...   \n",
+-            "2908                                Saddle the Wind   \n",
+-            "2909                          The Bridge at Remagen   \n",
+-            "2910                 The Curse of the Jade Scorpion   \n",
+-            "2911                              One Night of Love   \n",
+-            "2912                                      High Wall   \n",
+-            "\n",
+-            "                                          plot_synopsis      tags  \n",
+-            "0     Two thousand years ago, Nhagruul the Foul, a s...  violence  \n",
+-            "1     Matuschek's, a gift store in Budapest, is the ...  romantic  \n",
+-            "2     Small-time Italian-American criminals Caesar E...  violence  \n",
+-            "3     Arrival.\\nA train pulls into a station in Nort...    murder  \n",
+-            "4     ** CONTAINS SPOILERSIn England, OFFICIALS drag...    murder  \n",
+-            "...                                                 ...       ...  \n",
+-            "2908  Retired gunslinger and former Confederate sold...    murder  \n",
+-            "2909  The film opens with the U.S. Army failing to c...    murder  \n",
+-            "2910  In 1940, C.W. Briggs (Woody Allen) is an insur...    comedy  \n",
+-            "2911  Opera singer Mary Barrett (Grace Moore) leaves...  romantic  \n",
+-            "2912  Steven Kenet catches his unfaithful wife in th...    murder  \n",
+-            "\n",
+-            "[2913 rows x 3 columns]\n"
+-          ]
+-        }
+-      ]
+-    },
+-    {
+-      "cell_type": "code",
+-      "source": [
+-        "# Combine the 'title' and 'plot_synopsis' columns into a new 'texts' column in the DataFrame 'filtered_mt'\n",
+-        "filtered_mt['texts'] = filtered_mt['title'] + ' ' + filtered_mt['plot_synopsis']\n",
+-        "\n",
+-        "# Drop the columns 'title' and 'plot_synopsis' from the DataFrame\n",
+-        "filtered_mt = filtered_mt.drop(labels=['title', 'plot_synopsis'], axis=1)\n",
+-        "\n",
+-        "# Rename the 'tags' column to 'labels' in the DataFrame\n",
+-        "filtered_mt = filtered_mt.rename(columns={'tags': 'labels'})\n",
+-        "\n",
+-        "# Create a mapping from tags to numerical values based on the 'desired_tags' list\n",
+-        "tag_mapping = {tag: str(i) for i, tag in enumerate(desired_tags)}\n",
+-        "\n",
+-        "# Map the 'labels' column using the created tag mapping\n",
+-        "filtered_mt['labels'] = filtered_mt['labels'].map(tag_mapping)\n",
+-        "\n",
+-        "# Print the resulting DataFrame after the transformations\n",
+-        "print(filtered_mt)"
+-      ],
+-      "metadata": {
+-        "colab": {
+-          "base_uri": "https://localhost:8080/"
+-        },
+-        "id": "gfyMGnCbouQl",
+-        "outputId": "fa37ceec-b8de-498d-f334-663c1489910b"
+-      },
+-      "execution_count": 5,
+-      "outputs": [
+-        {
+-          "output_type": "stream",
+-          "name": "stdout",
+-          "text": [
+-            "     labels                                              texts\n",
+-            "0         2  Dungeons & Dragons: The Book of Vile Darkness ...\n",
+-            "1         1  The Shop Around the Corner Matuschek's, a gift...\n",
+-            "2         2  Little Caesar Small-time Italian-American crim...\n",
+-            "3         0  The Last Emperor Arrival.\\nA train pulls into ...\n",
+-            "4         0  Taste of Fear ** CONTAINS SPOILERSIn England, ...\n",
+-            "...     ...                                                ...\n",
+-            "2908      0  Saddle the Wind Retired gunslinger and former ...\n",
+-            "2909      0  The Bridge at Remagen The film opens with the ...\n",
+-            "2910      4  The Curse of the Jade Scorpion In 1940, C.W. B...\n",
+-            "2911      1  One Night of Love Opera singer Mary Barrett (G...\n",
+-            "2912      0  High Wall Steven Kenet catches his unfaithful ...\n",
+-            "\n",
+-            "[2913 rows x 2 columns]\n"
+-          ]
+-        }
+-      ]
+-    },
+-    {
+-      "cell_type": "code",
+-      "source": [
+-        "# Convert the 'texts' and 'labels' columns from the DataFrame 'filtered_mt' to Python lists\n",
+-        "filtered_mt['texts'] = filtered_mt['texts'].apply(lambda x: x.lower())\n",
+-        "texts = filtered_mt['texts'].tolist()\n",
+-        "labels = filtered_mt['labels'].tolist()\n"
+-      ],
+-      "metadata": {
+-        "id": "--VtFxlFovzW"
+-      },
+-      "execution_count": 6,
+-      "outputs": []
+-    },
+-    {
+-      "cell_type": "code",
+-      "source": [
+-        "!nvidia-smi\n"
+-      ],
+-      "metadata": {
+-        "colab": {
+-          "base_uri": "https://localhost:8080/"
+-        },
+-        "id": "xYgUp3HjpSmX",
+-        "outputId": "27a6c178-46de-4456-8d62-4e39c14bbca4"
+-      },
+-      "execution_count": 7,
+-      "outputs": [
+-        {
+-          "output_type": "stream",
+-          "name": "stdout",
+-          "text": [
+-            "Sun Feb  4 17:26:14 2024       \n",
+-            "+---------------------------------------------------------------------------------------+\n",
+-            "| NVIDIA-SMI 535.104.05             Driver Version: 535.104.05   CUDA Version: 12.2     |\n",
+-            "|-----------------------------------------+----------------------+----------------------+\n",
+-            "| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |\n",
+-            "| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |\n",
+-            "|                                         |                      |               MIG M. |\n",
+-            "|=========================================+======================+======================|\n",
+-            "|   0  Tesla T4                       Off | 00000000:00:04.0 Off |                    0 |\n",
+-            "| N/A   44C    P8               9W /  70W |      0MiB / 15360MiB |      0%      Default |\n",
+-            "|                                         |                      |                  N/A |\n",
+-            "+-----------------------------------------+----------------------+----------------------+\n",
+-            "                                                                                         \n",
+-            "+---------------------------------------------------------------------------------------+\n",
+-            "| Processes:                                                                            |\n",
+-            "|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |\n",
+-            "|        ID   ID                                                             Usage      |\n",
+-            "|=======================================================================================|\n",
+-            "|  No running processes found                                                           |\n",
+-            "+---------------------------------------------------------------------------------------+\n"
+-          ]
+-        }
+-      ]
+-    },
+-    {
+-      "cell_type": "markdown",
+-      "source": [
+-        "**Training model**"
+-      ],
+-      "metadata": {
+-        "id": "VI1uEcb5mLSy"
+-      }
+-    },
+-    {
+-      "cell_type": "code",
+-      "source": [
+-        "from transformers import GPT2Tokenizer, GPT2ForSequenceClassification, AdamW\n",
+-        "from torch.utils.data import DataLoader, Dataset\n",
+-        "from sklearn.model_selection import train_test_split\n",
+-        "import torch\n",
+-        "\n",
+-        "# Assuming you have a DataFrame called 'df' with 'labels' and 'texts' columns\n",
+-        "# Split the data into training and validation sets\n",
+-        "train_df, val_df = train_test_split(filtered_mt, test_size=0.2, random_state=42)\n",
+-        "tokenizer = GPT2Tokenizer.from_pretrained('gpt2')\n",
+-        "model = GPT2ForSequenceClassification.from_pretrained('gpt2', num_labels=5)\n",
+-        "# Add a new padding token\n",
+-        "tokenizer.add_special_tokens({'pad_token': '[PAD]'})\n",
+-        "\n",
+-        "# Create datasets and data loaders\n",
+-        "train_dataset = MovieDataset(train_df['texts'], train_df['labels'], tokenizer)\n",
+-        "val_dataset = MovieDataset(val_df['texts'], val_df['labels'], tokenizer)\n",
+-        "\n",
+-        "# Adjust the batch size to 1 for now\n",
+-        "train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)\n",
+-        "val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False)\n",
+-        "\n",
+-        "# Fine-tune the model\n",
+-        "device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\n",
+-        "model.to(device)\n",
+-        "\n",
+-        "optimizer = AdamW(model.parameters(), lr=5e-5)\n",
+-        "\n",
+-        "num_epochs = 4\n",
+-        "for epoch in range(num_epochs):\n",
+-        "    model.train()\n",
+-        "    for batch in train_loader:\n",
+-        "        # Extract inputs and labels from the batch\n",
+-        "        input_ids = batch['input_ids'].to(device)\n",
+-        "        attention_mask = batch['attention_mask'].to(device)\n",
+-        "        labels = batch['labels'].to(device)\n",
+-        "\n",
+-        "        outputs = model(input_ids, attention_mask=attention_mask, labels=labels)\n",
+-        "        loss = outputs.loss\n",
+-        "\n",
+-        "        loss.backward()\n",
+-        "        optimizer.step()\n",
+-        "        optimizer.zero_grad()\n",
+-        "\n",
+-        "    # Validation\n",
+-        "    model.eval()\n",
+-        "    val_loss = 0.0\n",
+-        "    correct_predictions = 0\n",
+-        "    total_samples = 0\n",
+-        "    best_accuracy = 0.0\n",
+-        "\n",
+-        "    with torch.no_grad():\n",
+-        "        for batch in val_loader:\n",
+-        "            input_ids = batch['input_ids'].to(device)\n",
+-        "            attention_mask = batch['attention_mask'].to(device)\n",
+-        "            labels = batch['labels'].to(device)\n",
+-        "\n",
+-        "            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)\n",
+-        "            loss = outputs.loss\n",
+-        "            logits = outputs.logits\n",
+-        "\n",
+-        "            val_loss += loss.item()\n",
+-        "\n",
+-        "            predictions = torch.argmax(logits, dim=1)\n",
+-        "            correct_predictions += (predictions == labels).sum().item()\n",
+-        "            total_samples += labels.size(0)\n",
+-        "\n",
+-        "    average_val_loss = val_loss / len(val_loader)\n",
+-        "    accuracy = correct_predictions / total_samples\n",
+-        "\n",
+-        "    if accuracy > best_accuracy:\n",
+-        "        best_accuracy = accuracy\n",
+-        "        model.save_pretrained('fine_tuned_model')\n",
+-        "\n",
+-        "    print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {average_val_loss:.4f}, Accuracy: {accuracy:.4f}')\n",
+-        "\n",
+-        "# Save the fine-tuned model\n",
+-        "model.save_pretrained('fine_tuned_model')\n"
+-      ],
+-      "metadata": {
+-        "colab": {
+-          "base_uri": "https://localhost:8080/",
+-          "height": 347
+-        },
+-        "id": "coywI9jQowoj",
+-        "outputId": "73c3efd7-208f-4b8b-b911-ddfb1755a8de"
+-      },
+-      "execution_count": 9,
+-      "outputs": [
+-        {
+-          "output_type": "stream",
+-          "name": "stderr",
+-          "text": [
+-            "/usr/local/lib/python3.10/dist-packages/transformers/optimization.py:411: FutureWarning: This implementation of AdamW is deprecated and will be removed in a future version. Use the PyTorch implementation torch.optim.AdamW instead, or set `no_deprecation_warning=True` to disable this warning\n",
+-            "  warnings.warn(\n"
+-          ]
+-        },
+-        {
+-          "output_type": "error",
+-          "ename": "RuntimeError",
+-          "evalue": "CUDA error: device-side assert triggered\nCUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.\nFor debugging consider passing CUDA_LAUNCH_BLOCKING=1.\nCompile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.\n",
+-          "traceback": [
+-            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+-            "\u001b[0;31mRuntimeError\u001b[0m                              Traceback (most recent call last)",
+-            "\u001b[0;32m<ipython-input-9-4af4d8ac17cf>\u001b[0m in \u001b[0;36m<cell line: 29>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     31\u001b[0m     \u001b[0;32mfor\u001b[0m \u001b[0mbatch\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mtrain_loader\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     32\u001b[0m         \u001b[0;31m# Extract inputs and labels from the batch\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 33\u001b[0;31m         \u001b[0minput_ids\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mbatch\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'input_ids'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mto\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mdevice\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     34\u001b[0m         \u001b[0mattention_mask\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mbatch\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'attention_mask'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mto\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mdevice\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     35\u001b[0m         \u001b[0mlabels\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mbatch\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'labels'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mto\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mdevice\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+-            "\u001b[0;31mRuntimeError\u001b[0m: CUDA error: device-side assert triggered\nCUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.\nFor debugging consider passing CUDA_LAUNCH_BLOCKING=1.\nCompile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.\n"
+-          ]
+-        }
+-      ]
+-    }
+-  ],
+-  "metadata": {
+-    "accelerator": "GPU",
+-    "colab": {
+-      "provenance": [],
+-      "gpuType": "T4"
+-    },
+-    "kernelspec": {
+-      "display_name": "Python 3",
+-      "name": "python3"
+-    },
+-    "language_info": {
+-      "name": "python"
+-    }
+-  },
+-  "nbformat": 4,
+-  "nbformat_minor": 0
+-}
+\ No newline at end of file
+Index: README.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><p align=\"center\">\n    <img src=\"https://i.ibb.co/vPrn2ff/OIG-Ph6w-Q7-WBAp-LZa8-UZJpr-W.jpg\" width=\"200px\" heigth=\"200px\"/>\n</p>\n\n\n# movieBERT - BERT Model for Predicting Tags Movies\n\nIn our project we use the BERT base pre-trained model in order to predict tags for movies from a dataset called \"mspt_full_data_csv\".\n\n## Directory Tree\n- **data**: contains a custom dataset loading methods;\n    - MovieDataset.py\n    - filtered_mt.csv\n    - mspt_full_data_csv\n- **model**: contains the BERT model class for the classifier and the best metrics for 10 epochs of training;\n    - BERTClassifier.py\n    - metrics_10epochs_2FCL.png\n- **preprocessing**: contains a pyhton file used to preprocess the dataset;\n    - Preprocessing.py\n- **training**: contains the training and validation flow of our BERT model;\n    - Training.py\n- **utils**: contains the methods to perform traing, validation and test; \n    - Utils.py\n- Inference.py: with this file, you can test the model with the three movie examples written in the \"test_text\" array;\n- movieBERT-Colab.ipynb: the Colab file where we have done all the tests. You can download it, upload on [Google Colab](https://colab.research.google.com) and visualize it.\n- _Inference.py_: with this file, you can test the model with the three movie examples written in the \"test_text\" array;\n- _movieBERT-Colab.ipynb_: the Colab file where we have done all the tests. You can upload it on [Google Colab](https://colab.research.google.com) and visualize all the outputs. You can also check the Colab file at this [link](https://colab.research.google.com/drive/1Mr68cP71SS5rYXcKaNydhZ1sJuF_n0Cb?usp=sharing).\n- _LSTM_test.ipynb_: the Colab file where we have created an LSTM model to compare the performances of our BERT-based model with this one. You can upload it on Google Colab (the same link as the previous point) or you can check it at this [link](https://colab.research.google.com/drive/1KkNALQes7SNrqwqhFL4MPUGQOVdq_Kk-?usp=sharing).\n\nN.B.: to test the model, you have to download the fine-tuned BERT .pth file from the following Google Drive [link](https://drive.google.com/drive/folders/1NWkrn6-gT-TSUJs-hJcvneqx2Ql7GvIz?usp=sharing) and put the file into the \"model\" folder. To test the LSTM, you have to download the trained model from this [link](https://drive.google.com/file/d/16BxkIbFHcoLe31TJoNHPMnPIi8rJ8vzD/view?usp=sharing) and you can find the \"filtered_mt.csv\" dataset in the \"data\" folder. \n\n# Description of the model\nOur Bert model aims to predict films tags, given a carefully preprocessed dataset.\nThe dataset in question is a csv file containing film name, description and genre (we have chosen maximum 5 types of genres). \nWe preprocessed the dataset in order to define tokens to be passed to the model for learning.\nWe then used the BERT base model (consisting of 12 Transformer Encoders) and defined suitable hyperparameters and started the training.\nWe evaluated various variants of the model (3 versions in particular) in order to improve its accuracy. We selected one of them.\n\n\n## Features of our BERT Model \n\n- Predicting tag movies from a given prompt.\nBelow, an example of its output:\n![output](https://i.ibb.co/W6dW8vC/Screenshot-2024-01-10-alle-15-43-40.png)\n\n## Canva presentation\n\nYou can see the project presentation at this [link](https://www.canva.com/design/DAF52mLNHP4/m6oRdloxEGFHSME1BU-7gQ/edit?utm_content=DAF52mLNHP4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)\n\n## Authors\n\n- [Giovanni Silvestri](https://www.github.com/vannisil)\n- [Marcello Vangi](https://www.github.com/uzingr)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/README.md b/README.md
+--- a/README.md	(revision dc54ba4f4e0c0c8137233f3a7ea7142e868b62bb)
++++ b/README.md	(date 1707068835027)
+@@ -45,7 +45,7 @@
+ 
+ ## Canva presentation
+ 
+-You can see the project presentation at this [link](https://www.canva.com/design/DAF52mLNHP4/m6oRdloxEGFHSME1BU-7gQ/edit?utm_content=DAF52mLNHP4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
++You can see the project presentation at this [link](https://www.canva.com/design/DAF6cgZHksY/uDLIfwVZW4KAW5jA3-zWoQ/edit?utm_content=DAF6cgZHksY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+ 
+ ## Authors
+ 
