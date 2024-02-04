@@ -45,7 +45,7 @@ Below, an example of its output:
 
 ## Canva presentation
 
-You can see the project presentation at this [link](https://www.canva.com/design/DAF52mLNHP4/m6oRdloxEGFHSME1BU-7gQ/edit?utm_content=DAF52mLNHP4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+You can see the project presentation at this [link](https://www.canva.com/design/DAF6cgZHksY/uDLIfwVZW4KAW5jA3-zWoQ/edit?utm_content=DAF6cgZHksY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ## Authors
 
