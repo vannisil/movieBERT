@@ -41,7 +41,7 @@
     &quot;Python.Training.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Merging master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/vannisilvestri/PycharmProjects/movieBERT&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -87,6 +87,8 @@
       <workItem from="1705501988027" duration="46000" />
       <workItem from="1705576568252" duration="25000" />
       <workItem from="1705858280283" duration="29000" />
+      <workItem from="1705938221393" duration="60000" />
+      <workItem from="1705938801135" duration="8000" />
     </task>
     <task id="LOCAL-00001" summary="metrics for the model">
       <option name="closed" value="true" />
