@@ -15,10 +15,22 @@ model.eval()
 
 test_text = ["\"Titanic\" is a 1997 epic romance and disaster film directed by James Cameron. The story revolves around the ill-fated maiden voyage of the RMS Titanic in 1912. The film follows the romance between Jack Dawson, a penniless artist played by Leonardo DiCaprio, and Rose DeWitt Bukater, an upper-class woman engaged to a wealthy industrialist, played by Kate Winslet. The love story unfolds against the backdrop of the luxurious but doomed ocean liner. As the ship collides with an iceberg and tragedy strikes, Jack and Rose must navigate the chaos and danger to survive.", "\"Rocky\" is a 1976 American sports drama film written and starring Sylvester Stallone. The film follows the story of Rocky Balboa, a small-time boxer from Philadelphia, who gets a shot at the world heavyweight championship. Despite being an underdog, Rocky seizes the opportunity to train rigorously and face the reigning champion, Apollo Creed, in a match that becomes a symbol of determination and the human spirit.", "\"Airplane!\" (1980), directed by Jim Abrahams and the Zucker brothers. The movie is a spoof of disaster films and follows the story of Ted Striker, a former fighter pilot, who must overcome his fear of flying to save a flight full of passengers when the crew falls ill due to food poisoning. Packed with absurd and slapstick humor, \"Airplane!\" is known for its rapid-fire jokes, visual gags, and memorable one-liners, making it a classic in the genre of parody comedy."]
 tags = ["murder", "romantic", "violence", "psychedelic", "comedy"]
+
+# Iterate over test examples and make predictions
 for i in range(len(test_text)):
-  print(f"{i+1}) {test_text[i]}")
-  predicted_tags = prediction(test_text[i], model, tokenizer, device)
-  for j in range(0,len(tags)):
-    if predicted_tags == j:
-      tag = tags[j]
-      print(f"    The best tag for this film is: {tag}")
+    print(f"{i+1}) {test_text[i]}")
+
+    # Make predictions using the modified function
+    predicted_tags, probabilities = prediction(test_text[i], model, tokenizer, device)
+
+    # Check if all tag probabilities are less than 0.7
+    if all(probability < 0.7 for probability in probabilities[0]):
+        print("    No tags")
+    else:
+        # Print the best predicted tag for each example if the probability is greater than 70%
+        for j in range(len(tags)):
+            if probabilities[0, j] > 0.7:
+                tag = tags[j]
+                print(f"    The best tag for this film is: {tag} (Probability: {probabilities[0, j]:.2%})")
+
+
