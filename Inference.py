@@ -32,5 +32,3 @@ for i in range(len(test_text)):
             if probabilities[0, j] > 0.7:
                 tag = tags[j]
                 print(f"    The best tag for this film is: {tag} (Probability: {probabilities[0, j]:.2%})")
-
-
