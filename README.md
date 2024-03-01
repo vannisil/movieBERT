@@ -41,7 +41,7 @@ We evaluated various variants of the model (3 versions in particular) in order t
 
 - Predicting movies tags from a given prompt.
 Below, an example of its output:
-![output](https://i.ibb.co/W6dW8vC/Screenshot-2024-01-10-alle-15-43-40.png)
+![output](https://i.ibb.co/CWwqq2K/carbon.png)
 
 ## Canva presentation
 
