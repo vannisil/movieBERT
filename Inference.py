@@ -4,31 +4,46 @@ from transformers import BertTokenizer
 from model.BERTClassifier import BERTClassifier
 from utils.Utils import prediction
 
+# Define BERT model name, number of classes, and device (CPU or GPU)
 bert_model_name = 'bert-base-cased'
 num_classes = 5
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Initialize BERT tokenizer
 tokenizer = BertTokenizer.from_pretrained(bert_model_name)
+
+# Initialize BERTClassifier model and move it to the appropriate device
 model = BERTClassifier(bert_model_name, num_classes).to(device)
+
+# Load model's state dictionary from the saved file
 model.load_state_dict(torch.load('./model/bert_classifier.pth', map_location=device))
+
+# Set the model to evaluation mode
 model.eval()
 
+# Test texts to make predictions on
+test_text = [
+    "\"Titanic\" is a 1997 epic romance and disaster film directed by James Cameron. The story revolves around the ill-fated maiden voyage of the RMS Titanic in 1912. The film follows the romance between Jack Dawson, a penniless artist played by Leonardo DiCaprio, and Rose DeWitt Bukater, an upper-class woman engaged to a wealthy industrialist, played by Kate Winslet. The love story unfolds against the backdrop of the luxurious but doomed ocean liner. As the ship collides with an iceberg and tragedy strikes, Jack and Rose must navigate the chaos and danger to survive.",
+    "\"Rocky\" is a 1976 American sports drama film written and starring Sylvester Stallone. The film follows the story of Rocky Balboa, a small-time boxer from Philadelphia, who gets a shot at the world heavyweight championship. Despite being an underdog, Rocky seizes the opportunity to train rigorously and face the reigning champion, Apollo Creed, in a match that becomes a symbol of determination and the human spirit.",
+    "\"Airplane!\" (1980), directed by Jim Abrahams and the Zucker brothers. The movie is a spoof of disaster films and follows the story of Ted Striker, a former fighter pilot, who must overcome his fear of flying to save a flight full of passengers when the crew falls ill due to food poisoning. Packed with absurd and slapstick humor, \"Airplane!\" is known for its rapid-fire jokes, visual gags, and memorable one-liners, making it a classic in the genre of parody comedy."
+]
 
-test_text = ["\"Titanic\" is a 1997 epic romance and disaster film directed by James Cameron. The story revolves around the ill-fated maiden voyage of the RMS Titanic in 1912. The film follows the romance between Jack Dawson, a penniless artist played by Leonardo DiCaprio, and Rose DeWitt Bukater, an upper-class woman engaged to a wealthy industrialist, played by Kate Winslet. The love story unfolds against the backdrop of the luxurious but doomed ocean liner. As the ship collides with an iceberg and tragedy strikes, Jack and Rose must navigate the chaos and danger to survive.", "\"Rocky\" is a 1976 American sports drama film written and starring Sylvester Stallone. The film follows the story of Rocky Balboa, a small-time boxer from Philadelphia, who gets a shot at the world heavyweight championship. Despite being an underdog, Rocky seizes the opportunity to train rigorously and face the reigning champion, Apollo Creed, in a match that becomes a symbol of determination and the human spirit.", "\"Airplane!\" (1980), directed by Jim Abrahams and the Zucker brothers. The movie is a spoof of disaster films and follows the story of Ted Striker, a former fighter pilot, who must overcome his fear of flying to save a flight full of passengers when the crew falls ill due to food poisoning. Packed with absurd and slapstick humor, \"Airplane!\" is known for its rapid-fire jokes, visual gags, and memorable one-liners, making it a classic in the genre of parody comedy."]
+# Corresponding tags for the test texts
 tags = ["murder", "romantic", "violence", "psychedelic", "comedy"]
 
 # Iterate over test examples and make predictions
 for i in range(len(test_text)):
-    print(f"{i+1}) {test_text[i]}")
+    print(f"{i+1}) {test_text[i]}")  # Print test text
 
     # Make predictions using the modified function
     predicted_tags, probabilities = prediction(test_text[i], model, tokenizer, device)
 
     # Check if all tag probabilities are less than 0.7
     if all(probability < 0.7 for probability in probabilities[0]):
-        print("    No tags")
+        print("    No tags")  # If probabilities are low, print no tags
     else:
         # Print the best predicted tag for each example if the probability is greater than 70%
         for j in range(len(tags)):
             if probabilities[0, j] > 0.7:
                 tag = tags[j]
-                print(f"    The best tag for this film is: {tag} (Probability: {probabilities[0, j]:.2%})")
+                print(f"    The best tag for this film is: {tag} (Probability: {probabilities[0, j]:.2%})")  # Print the best predicted tag and its probability
