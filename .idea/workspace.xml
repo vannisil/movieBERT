@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd1ab926-d078-4188-a6ad-c44b758e2489" name="Changes" comment="metrics for the model">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_04_02_24,_18_47_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_04_02_24__18_47__Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/MovieDataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/MovieDataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/BERTClassifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/BERTClassifier.py" afterDir="false" />
-    </list>
+    <list default="true" id="cd1ab926-d078-4188-a6ad-c44b758e2489" name="Changes" comment="metrics for the model" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -98,7 +92,7 @@
       <workItem from="1707147502176" duration="228000" />
       <workItem from="1707147867789" duration="847000" />
       <workItem from="1707237817140" duration="620000" />
-      <workItem from="1709301222406" duration="303000" />
+      <workItem from="1709301222406" duration="721000" />
     </task>
     <task id="LOCAL-00001" summary="metrics for the model">
       <option name="closed" value="true" />
@@ -121,6 +115,6 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/movieBERT$Training.coverage" NAME="Training Coverage Results" MODIFIED="1703238728664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/training" />
     <SUITE FILE_PATH="coverage/movieBERT$Preprocessing.coverage" NAME="Preprocessing Coverage Results" MODIFIED="1703238497486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/preprocessing" />
-    <SUITE FILE_PATH="coverage/movieBERT$Inference.coverage" NAME="Inference Coverage Results" MODIFIED="1707237819334" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/movieBERT$Inference.coverage" NAME="Inference Coverage Results" MODIFIED="1709301737973" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
