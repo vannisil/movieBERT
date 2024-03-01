@@ -39,7 +39,7 @@ We evaluated various variants of the model (3 versions in particular) in order t
 
 ## Features of our BERT Model 
 
-- Predicting tag movies from a given prompt.
+- Predicting movies tags from a given prompt.
 Below, an example of its output:
 ![output](https://i.ibb.co/W6dW8vC/Screenshot-2024-01-10-alle-15-43-40.png)
 
