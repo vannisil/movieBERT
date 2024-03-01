@@ -12,9 +12,8 @@ In our project we use the BERT base pre-trained model in order to predict tags f
     - MovieDataset.py
     - filtered_mt.csv
     - mspt_full_data_csv
-- **model**: contains the BERT model class for the classifier and the best metrics for 10 epochs of training;
+- **model**: contains the BERT model class for the classifier;
     - BERTClassifier.py
-    - metrics_10epochs_2FCL.png
 - **preprocessing**: contains a pyhton file used to preprocess the dataset;
     - Preprocessing.py
 - **training**: contains the training and validation flow of our BERT model;
